@@ -5,141 +5,172 @@ public class Program
     private static void Main(string[] args)
     {
 
-        // setup game info
-        int round = 1;
-        int alienHealth = 5;
-        int cityHealth = 25;
+        BoardDisplay boardDisplay = new BoardDisplay();
+        Rules rules = new Rules();
+        Player player = new Player();
 
-        // into - setup computer player
-        Console.WriteLine("An Alien ship is coming to attack your city!\nIt has taken up a numerical position from 1 to 99.\nYour job is to guess it's location and shoot it down!");
-
-        int alienRange = Random();
-
-
-        // start game
-        while (cityHealth > 0 && alienHealth > 0)
+        bool gameOver = false;
+        while (!gameOver)
         {
-            // output game status
-            Console.WriteLine("------------------------------------------------------------\n" +
-                   $"Status: Round {round}  City: {cityHealth}/25  Alien Ship: {alienHealth}/5\n" +
-                   $"Your cannon is expected to deal {cannonDamage(round)} damage this round\n" +
-                   "Enter desired cannon range:");
 
-            // player 2
-            int cannonRange = rangeValidate();
+            // PLayer 1 turn
+            Turn(player.player1Name, player.player1Tile);
 
+            // PLayer 2 turn
+            Turn(player.player2Name, player.player2Tile);
+
+        }
+
+        void Turn(string playerName, string playerTile)
+        {
             Console.Clear();
-            
-            if (cannonRange < alienRange)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine("That round FELL SHORT of the target.");
-                Console.ForegroundColor = ConsoleColor.White;
-                cityHealth--;
-                round++;
-            }
-            else if (cannonRange > alienRange)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("That round OVERSHOT the target.");
-                Console.ForegroundColor = ConsoleColor.White;
-                cityHealth--;
-                round++;
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("DIRECT HIT!");
-                alienHealth = alienHealth - cannonDamage(round);
-                alienRange = Random();
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("WARNING: The alien ship has moved to a new position!");
-                Console.ForegroundColor = ConsoleColor.White;
-                round++;
-            }
 
+            Console.WriteLine($" It is {playerName}'s turn\n");
+
+            boardDisplay.Results();
+
+            Console.WriteLine("\n What tile do you want to play?");
+            var playerInput = Convert.ToString(Console.ReadLine());
+
+            boardDisplay.Update(playerInput, playerTile);
         }
 
-        bool won = cityHealth > 0;
-        WinOrLose(won);
-
-        /*----------------------methods----------------------*/
-
-        // game outcome
-        void WinOrLose(bool won)
-        {
-            if (won)
-            {
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("The alien ship was destroyed.\nYou saved the city!");
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-            else
-            {
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"The city has been destroyed.\nThe alien ship was hidden at position: {alienRange}\nGAME OVER");
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-        }
-
-
-        // cannon damage calculator
-        int cannonDamage(int round)
-        {
-            if (round % 3 == 0 && round % 5 == 0) // if round is a multiple of 3 and 5
-            {
-                int damage = 5;
-                return damage;
-            }
-            else if(round % 3 == 0 || round % 5 == 0) // if round is a multple of 3 or 5
-            {
-                int damage = 4;
-                return damage;
-            }
-            else
-            {
-                if (round > 20)
-                {
-                    int damage = 4;
-                    return damage;
-                }
-                else
-                {
-                    int damage = 1;
-                    return damage;
-                }
-            }
-        }
-
-
-        // range validator
-        int rangeValidate()
+        string Validation(string playerInput)
         {
 
-            var cannonRange = Convert.ToInt32(Console.ReadLine());
-
-            if (cannonRange < 1 || cannonRange > 99)
-            {
-                Console.WriteLine("Range must be > 0 and < 100");
-                return rangeValidate();
-            }
-            else
-            {
-                return cannonRange;
-            }
-
-        }
+            if (true) { return playerInput; }
 
 
-        // random range
-        int Random()
-        {
-            Random rnd = new Random();
-
-            return rnd.Next(1, 99);
         }
 
     }
+
+    class Rules
+    {    
+    
+        // start with player1
+        // display board
+        // player1 inputs tile
+        // validate tile selection
+        // output player1's selection
+        // update board
+    }
+
+    class BoardDisplay
+    {
+        public string pos1 { get; set; }
+        public string pos2 { get; set; }
+        public string pos3 { get; set; }
+        public string pos4 { get; set; }
+        public string pos5 { get; set;}
+        public string pos6 { get; set;}
+        public string pos7 { get; set;}
+        public string pos8 { get; set; }
+        public string pos9 { get; set; }
+
+        public BoardDisplay() //used to setup the game board
+        {
+            pos1 = " ";
+            pos2 = " ";
+            pos3 = " ";
+            pos4 = " ";
+            pos5 = " ";
+            pos6 = " ";
+            pos7 = " ";
+            pos8 = " ";
+            pos9 = " ";
+        }
+
+
+        public void Results() // display current game board results
+        {
+            Console.WriteLine(@$" {pos7} | {pos8} | {pos9} " +
+                                "\n---+---+---\n" +
+                               $" {pos4} | {pos5} | {pos6} " +
+                                "\n---+---+---\n" +
+                               $" {pos1} | {pos2} | {pos3} ");
+
+        }
+
+        public string Update(string playerInput, string currentPlayer) // set new tile for game board
+        {
+            switch (playerInput)
+            {
+                case "1":
+                    pos1 = currentPlayer;
+                    break;
+                case "2":
+                    pos2 = currentPlayer;
+                    break;
+                case "3":
+                    pos3 = currentPlayer;
+                    break;
+                case "4":
+                    pos4 = currentPlayer;
+                    break;
+                case "5":
+                    pos5 = currentPlayer;
+                    break;
+                case "6":
+                    pos6 = currentPlayer;
+                    break;
+                case "7":
+                    pos7 = currentPlayer;
+                    break;
+                case "8":
+                    pos8 = currentPlayer;
+                    break;
+                case "9":
+                    pos9 = currentPlayer;
+                    break;
+            }
+            return playerInput;
+        }
+    }
+
+
+    class Player
+    {
+        public string player1Name { get; set; }
+        public string player1Tile { get; set; }
+        public string player2Name { get; set; }
+        public string player2Tile { get; set; }
+
+
+        public Player()
+        {
+            player1Name = "Player 1";
+            player1Tile = "X";
+            player2Name = "Player 2";
+            player2Tile = "O";
+        }
+
+        //what else?
+
+    }
+
+
+    class Score 
+    {
+
+        public Score() { }
+
+
+
+    }
+
+    class GameStatus
+    {
+
+        public bool gameOver;
+    
+    
+    
+    
+    }
+
+
+
 }
+
+
