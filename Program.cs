@@ -1,27 +1,49 @@
 ﻿using System;
 using System.Data;
+using System.Numerics;
 
 public class Program
 {
+    public static bool safe;
+
     private static void Main(string[] args)
     {
 
         Board board = new Board();
-        Rules rules = new Rules();
         Player player = new Player();
 
-        //Console.WriteLine("Welcome to Tic Tac Toe!\n\nInstructions: Use the numerical pad to place your tile in the designated place\nExample: 7 = the top left position\n\nPress 'Enter' to continue");
-        //Console.ReadLine();
+        Console.WriteLine("Welcome to Tic Tac Toe!\n\nInstructions: Use the numerical pad to place your tile in the designated place\nExample: 7 = the top left position\n\nPress 'Enter' to continue");
+        Console.ReadLine();
 
+        // setup names
+        Console.WriteLine("What is Player 1's name");
+        var askP1 = Console.ReadLine();
+        player.player1Name = askP1;
+
+        Console.WriteLine("What is Player 2's name");
+        var askP2 = Console.ReadLine();
+        player.player2Name = askP2;
+
+        // start game
         bool gameOver = false;
         while (!gameOver)
         {
 
-            // PLayer 1 turn
+            // Player 1 turn
             Turn(player.player1Name, player.player1Tile);
 
-            // PLayer 2 turn
+            //TieGame();
+            HasWon(player.player1Name);
+            TieGame();
+            if (gameOver) { break; }
+
+            // Player 2 turn
             Turn(player.player2Name, player.player2Tile);
+
+            //TieGame();
+            HasWon(player.player2Name);
+            TieGame();
+            if (gameOver) { break; }
 
         }
 
@@ -38,7 +60,46 @@ public class Program
 
             RangeValidation(playerInput, playerName, playerTile);
 
-            board.Update(playerInput, playerTile);
+            TileValidation(playerInput, playerName, playerTile);
+        }
+
+        void HasWon(string playerName)
+        {
+            if(board.pos1 == player.player1Tile && board.pos2 == player.player1Tile && board.pos3 == player.player1Tile) Won(playerName);
+            if (board.pos4 == player.player1Tile && board.pos5 == player.player1Tile && board.pos6 == player.player1Tile) Won(playerName);
+            if (board.pos7 == player.player1Tile && board.pos8 == player.player1Tile && board.pos9 == player.player1Tile) Won(playerName);
+            if (board.pos7 == player.player1Tile && board.pos4 == player.player1Tile && board.pos1 == player.player1Tile) Won(playerName);
+            if (board.pos8 == player.player1Tile && board.pos5 == player.player1Tile && board.pos2 == player.player1Tile) Won(playerName);
+            if (board.pos9 == player.player1Tile && board.pos6 == player.player1Tile && board.pos3 == player.player1Tile) Won(playerName);
+            if (board.pos7 == player.player1Tile && board.pos5 == player.player1Tile && board.pos3 == player.player1Tile) Won(playerName);
+            if (board.pos9 == player.player1Tile && board.pos5 == player.player1Tile && board.pos1 == player.player1Tile) Won(playerName);
+            if (board.pos1 == player.player2Tile && board.pos2 == player.player2Tile && board.pos3 == player.player2Tile) Won(playerName);
+            if (board.pos4 == player.player2Tile && board.pos5 == player.player2Tile && board.pos6 == player.player2Tile) Won(playerName);
+            if (board.pos7 == player.player2Tile && board.pos8 == player.player2Tile && board.pos9 == player.player2Tile) Won(playerName);
+            if (board.pos7 == player.player2Tile && board.pos4 == player.player2Tile && board.pos1 == player.player2Tile) Won(playerName);
+            if (board.pos8 == player.player2Tile && board.pos5 == player.player2Tile && board.pos2 == player.player2Tile) Won(playerName);
+            if (board.pos9 == player.player2Tile && board.pos6 == player.player2Tile && board.pos3 == player.player2Tile) Won(playerName);
+            if (board.pos7 == player.player2Tile && board.pos5 == player.player2Tile && board.pos3 == player.player2Tile) Won(playerName);
+            if (board.pos9 == player.player2Tile && board.pos5 == player.player2Tile && board.pos1 == player.player2Tile) Won(playerName);
+        }
+
+        void Won(string playerName)
+        {
+            Console.Clear();
+            board.Results();
+            Console.WriteLine($"\n{playerName} is the WINNER!");
+            gameOver = true;
+        }
+
+        void TieGame()
+        {
+            if (board.pos1 != " " && board.pos2 != " " && board.pos3 != " " && board.pos4 != " " && board.pos5 != " " && board.pos6 != " " && board.pos7 != " " && board.pos8 != " " && board.pos9 != " ")
+            {
+                Console.Clear();
+                board.Results();
+                Console.WriteLine("DRAW GAME!");
+                gameOver = true;
+            }
         }
 
         string RangeValidation(string playerInput, string playerName, string playerTile) // validate range is between 1 and 9
@@ -62,17 +123,118 @@ public class Program
             return playerInput;
         }
 
-    }
+        void TileValidation(string playerInput, string playerName, string playerTile)
+        {
+            int playerInputConvert = Convert.ToInt32(playerInput);
 
-    class Rules
-    {    
-    
-        // start with player1
-        // display board
-        // player1 inputs tile
-        // validate tile selection
-        // output player1's selection
-        // update board
+            switch (playerInputConvert)
+            {
+                case 1:
+                    if (board.pos1 == player.player1Tile || board.pos1 == player.player2Tile)
+                    {
+                       Rules(playerName, playerTile);
+                    }
+                    else
+                    {
+                        board.Update(playerInput, playerTile);
+                    }
+                    break;
+                case 2:
+                    if (board.pos2 == player.player1Tile || board.pos2 == player.player2Tile)
+                    {
+                        Rules(playerName, playerTile);
+                    }
+                    else
+                    {
+                        board.Update(playerInput, playerTile);
+                    }
+                    break;
+                case 3:
+                    if (board.pos3 == player.player1Tile || board.pos3 == player.player2Tile)
+                    {
+                        Rules(playerName, playerTile);
+                    }
+                    else
+                    {
+                        board.Update(playerInput, playerTile);
+                    }
+                    break;
+                case 4:
+                    if (board.pos4 == player.player1Tile || board.pos4 == player.player2Tile)
+                    {
+                        Rules(playerName, playerTile);
+                    }
+                    else
+                    {
+                        board.Update(playerInput, playerTile);
+                    }
+                    break;
+                case 5:
+                    if (board.pos5 == player.player1Tile || board.pos5 == player.player2Tile)
+                    {
+                        Rules(playerName, playerTile);
+                    }
+                    else
+                    {
+                        board.Update(playerInput, playerTile);
+                    }
+                    break;
+                case 6:
+                    if (board.pos6 == player.player1Tile || board.pos6 == player.player2Tile)
+                    {
+                        Rules(playerName, playerTile);
+                    }
+                    else
+                    {
+                        board.Update(playerInput, playerTile);
+                    }
+                    break;
+                case 7:
+                    if (board.pos7 == player.player1Tile || board.pos7 == player.player2Tile)
+                    {
+                        Rules(playerName, playerTile);
+                    }
+                    else
+                    {
+                        board.Update(playerInput, playerTile);
+                    }
+                    break;
+                case 8:
+                    if (board.pos8 == player.player1Tile || board.pos8 == player.player2Tile)
+                    {
+                        Rules(playerName, playerTile);
+                    }
+                    else
+                    {
+                        board.Update(playerInput, playerTile);
+                    }
+                    break;
+                case 9:
+                    if (board.pos9 == player.player1Tile || board.pos9 == player.player2Tile)
+                    {
+                        Rules(playerName, playerTile);
+                    }
+                    else
+                    {
+                        board.Update(playerInput, playerTile);
+                    }
+                    break;
+            }
+        }
+
+        void Rules(string playerName, string playerTile)
+        {
+            Console.Clear();
+
+            Console.WriteLine("That tile is already claimed. Please select a differnt one.");
+
+            Console.WriteLine("Press 'Enter' to continue");
+
+            Console.ReadLine();
+
+            Turn(playerName, playerTile);
+        }
+
     }
 
     class Board
@@ -116,16 +278,7 @@ public class Program
             switch (playerInput)
             {
                 case "1":
-                    if (pos1 == " ")
-                    {
-                        pos1 = currentPlayer;
-                    }
-                    else
-                    {
-                        //Console.WriteLine("That tile is already taken");
-                        //Console.WriteLine("\n What tile do you want to play?");
-                        //playerInput = Convert.ToString(Console.ReadLine());
-                    }
+                    pos1 = currentPlayer;
                     break;
                 case "2":
                     pos2 = currentPlayer;
@@ -154,8 +307,8 @@ public class Program
             }
             return playerInput;
         }
-    }
 
+    }
 
     class Player
     {
@@ -173,32 +326,19 @@ public class Program
             player2Tile = "O";
         }
 
-        //what else?
+        //what else? scores?
 
     }
-
 
     class Score 
     {
 
         public Score() { }
-
-
-
     }
 
     class GameStatus
     {
 
         public bool gameOver;
-    
-    
-    
-    
     }
-
-
-
 }
-
-
