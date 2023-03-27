@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Data;
 
 public class Program
 {
     private static void Main(string[] args)
     {
 
-        BoardDisplay boardDisplay = new BoardDisplay();
+        Board board = new Board();
         Rules rules = new Rules();
         Player player = new Player();
+
+        //Console.WriteLine("Welcome to Tic Tac Toe!\n\nInstructions: Use the numerical pad to place your tile in the designated place\nExample: 7 = the top left position\n\nPress 'Enter' to continue");
+        //Console.ReadLine();
 
         bool gameOver = false;
         while (!gameOver)
@@ -27,20 +31,35 @@ public class Program
 
             Console.WriteLine($" It is {playerName}'s turn\n");
 
-            boardDisplay.Results();
+            board.Results();
 
             Console.WriteLine("\n What tile do you want to play?");
             var playerInput = Convert.ToString(Console.ReadLine());
 
-            boardDisplay.Update(playerInput, playerTile);
+            RangeValidation(playerInput, playerName, playerTile);
+
+            board.Update(playerInput, playerTile);
         }
 
-        string Validation(string playerInput)
+        string RangeValidation(string playerInput, string playerName, string playerTile) // validate range is between 1 and 9
         {
+            int playerInputConvert = Convert.ToInt32(playerInput);
 
-            if (true) { return playerInput; }
+            while (playerInputConvert < 1 || playerInputConvert > 9)
+            {
+                Console.Clear();
+                
+                Console.WriteLine("Please input a number between 1 and 9.");
+                
+                Console.WriteLine("Press 'Enter' to continue");
+                
+                Console.ReadLine();
 
+                Turn(playerName, playerTile);
 
+                return playerInput;
+            }
+            return playerInput;
         }
 
     }
@@ -56,7 +75,7 @@ public class Program
         // update board
     }
 
-    class BoardDisplay
+    class Board
     {
         public string pos1 { get; set; }
         public string pos2 { get; set; }
@@ -68,7 +87,7 @@ public class Program
         public string pos8 { get; set; }
         public string pos9 { get; set; }
 
-        public BoardDisplay() //used to setup the game board
+        public Board() //used to setup the game board
         {
             pos1 = " ";
             pos2 = " ";
@@ -97,7 +116,16 @@ public class Program
             switch (playerInput)
             {
                 case "1":
-                    pos1 = currentPlayer;
+                    if (pos1 == " ")
+                    {
+                        pos1 = currentPlayer;
+                    }
+                    else
+                    {
+                        //Console.WriteLine("That tile is already taken");
+                        //Console.WriteLine("\n What tile do you want to play?");
+                        //playerInput = Convert.ToString(Console.ReadLine());
+                    }
                     break;
                 case "2":
                     pos2 = currentPlayer;
