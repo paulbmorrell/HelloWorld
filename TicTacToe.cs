@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Data;
-using System.Numerics;
 
 public class TicTacToe
 {
     private static void Main(string[] args)
     {
         Board board = new Board();
-        Player player = new Player();
+        Player player1 = new Player("Player1", "X");
+        Player player2 = new Player("Player2", "0");
 
         // output game info
         Console.WriteLine("Welcome to Tic Tac Toe!\n\nInstructions: Use the numerical pad to place your tile in the designated place\nExample: 7 = the top left position\n\nPress 'Enter' to continue");
@@ -17,29 +16,31 @@ public class TicTacToe
         Console.Clear();
         Console.WriteLine("What is Player 1's name");
         var askP1 = Console.ReadLine();
-        player.player1Name = askP1;
+        player1.playerName = askP1;
 
         Console.Clear();
         Console.WriteLine("What is Player 2's name");
         var askP2 = Console.ReadLine();
-        player.player2Name = askP2;
+        player2.playerName = askP2;
 
         // start game
         bool gameOver = false;
-        while (!gameOver)
+        int drawGame = 0;
+        Player currentPlayer = player1;
+        while (drawGame < 9)
         {
-            // Player 1 turn
-            Turn(player.player1Name, player.player1Tile);
-            P1Status(player.player1Name);
-            TieGame();
-            if (gameOver) { break; }
+            // player turn
+            Turn(currentPlayer.playerName, currentPlayer.playerTile);
+            WinStatus(currentPlayer.playerName, currentPlayer.playerTile);
+            if (gameOver) { break; } 
 
-            // Player 2 turn
-            Turn(player.player2Name, player.player2Tile);
-            P2Status(player.player2Name);
-            TieGame();
-            if (gameOver) { break; }
+            // change player
+            currentPlayer = currentPlayer == player1 ? player2 : player1;
+            drawGame++;
         }
+
+        // if no winner
+        if (!gameOver) TieGame();
 
         // player turn steps
         void Turn(string playerName, string playerTile)
@@ -59,49 +60,38 @@ public class TicTacToe
         }
 
         // validate if player has won
-        void P1Status(string playerName)
+        void WinStatus(string playerName, string playerTile)
         {
-            if(board.pos1 == player.player1Tile && board.pos2 == player.player1Tile && board.pos3 == player.player1Tile) Won(playerName);
-            if (board.pos4 == player.player1Tile && board.pos5 == player.player1Tile && board.pos6 == player.player1Tile) Won(playerName);
-            if (board.pos7 == player.player1Tile && board.pos8 == player.player1Tile && board.pos9 == player.player1Tile) Won(playerName);
-            if (board.pos7 == player.player1Tile && board.pos4 == player.player1Tile && board.pos1 == player.player1Tile) Won(playerName);
-            if (board.pos8 == player.player1Tile && board.pos5 == player.player1Tile && board.pos2 == player.player1Tile) Won(playerName);
-            if (board.pos9 == player.player1Tile && board.pos6 == player.player1Tile && board.pos3 == player.player1Tile) Won(playerName);
-            if (board.pos7 == player.player1Tile && board.pos5 == player.player1Tile && board.pos3 == player.player1Tile) Won(playerName);
-            if (board.pos9 == player.player1Tile && board.pos5 == player.player1Tile && board.pos1 == player.player1Tile) Won(playerName);
-        }
-
-        void P2Status(string playerName)
-        {
-            if (board.pos1 == player.player2Tile && board.pos2 == player.player2Tile && board.pos3 == player.player2Tile) Won(playerName);
-            if (board.pos4 == player.player2Tile && board.pos5 == player.player2Tile && board.pos6 == player.player2Tile) Won(playerName);
-            if (board.pos7 == player.player2Tile && board.pos8 == player.player2Tile && board.pos9 == player.player2Tile) Won(playerName);
-            if (board.pos7 == player.player2Tile && board.pos4 == player.player2Tile && board.pos1 == player.player2Tile) Won(playerName);
-            if (board.pos8 == player.player2Tile && board.pos5 == player.player2Tile && board.pos2 == player.player2Tile) Won(playerName);
-            if (board.pos9 == player.player2Tile && board.pos6 == player.player2Tile && board.pos3 == player.player2Tile) Won(playerName);
-            if (board.pos7 == player.player2Tile && board.pos5 == player.player2Tile && board.pos3 == player.player2Tile) Won(playerName);
-            if (board.pos9 == player.player2Tile && board.pos5 == player.player2Tile && board.pos1 == player.player2Tile) Won(playerName);
+            // check horizontals
+            if(board.pos1 == playerTile && board.pos2 == playerTile && board.pos3 == playerTile) WonGame(playerName);
+            if (board.pos4 == playerTile && board.pos5 == playerTile && board.pos6 == playerTile) WonGame(playerName);
+            if (board.pos7 == playerTile && board.pos8 == playerTile && board.pos9 == playerTile) WonGame(playerName);
+            
+            // check verticals
+            if (board.pos7 == playerTile && board.pos4 == playerTile && board.pos1 == playerTile) WonGame(playerName);
+            if (board.pos8 == playerTile && board.pos5 == playerTile && board.pos2 == playerTile) WonGame(playerName);
+            if (board.pos9 == playerTile && board.pos6 == playerTile && board.pos3 == playerTile) WonGame(playerName);
+            
+            // check diagonals
+            if (board.pos7 == playerTile && board.pos5 == playerTile && board.pos3 == playerTile) WonGame(playerName);
+            if (board.pos9 == playerTile && board.pos5 == playerTile && board.pos1 == playerTile) WonGame(playerName);
         }
 
         // output winner
-        void Won(string playerName)
+        void WonGame(string playerName)
         {
             Console.Clear();
+            Console.WriteLine($"{playerName} is the Winner!\n");
             board.Results();
-            Console.WriteLine($"\n{playerName} is the Winner!");
             gameOver = true;
         }
 
-        // validate if all tiles have been claimed
+        // output draw
         void TieGame()
         {
-            if (board.pos1 != " " && board.pos2 != " " && board.pos3 != " " && board.pos4 != " " && board.pos5 != " " && board.pos6 != " " && board.pos7 != " " && board.pos8 != " " && board.pos9 != " ")
-            {
-                Console.Clear();
-                board.Results();
-                Console.WriteLine("\n---Draw Grame---");
-                gameOver = true;
-            }
+            Console.Clear();
+            Console.WriteLine("---Draw Grame---\n");
+            board.Results();
         }
 
         // validate player input is acceptable 
@@ -134,7 +124,7 @@ public class TicTacToe
             switch (playerInputConvert)
             {
                 case 1:
-                    if (board.pos1 == player.player1Tile || board.pos1 == player.player2Tile)
+                    if (board.pos1 == player1.playerTile || board.pos1 == player2.playerTile)
                     {
                        Rules(playerName, playerTile);
                     }
@@ -144,7 +134,7 @@ public class TicTacToe
                     }
                     break;
                 case 2:
-                    if (board.pos2 == player.player1Tile || board.pos2 == player.player2Tile)
+                    if (board.pos2 == player1.playerTile || board.pos2 == player2.playerTile)
                     {
                         Rules(playerName, playerTile);
                     }
@@ -154,7 +144,7 @@ public class TicTacToe
                     }
                     break;
                 case 3:
-                    if (board.pos3 == player.player1Tile || board.pos3 == player.player2Tile)
+                    if (board.pos3 == player1.playerTile || board.pos3 == player2.playerTile)
                     {
                         Rules(playerName, playerTile);
                     }
@@ -164,7 +154,7 @@ public class TicTacToe
                     }
                     break;
                 case 4:
-                    if (board.pos4 == player.player1Tile || board.pos4 == player.player2Tile)
+                    if (board.pos4 == player1.playerTile || board.pos4 == player2.playerTile)
                     {
                         Rules(playerName, playerTile);
                     }
@@ -174,7 +164,7 @@ public class TicTacToe
                     }
                     break;
                 case 5:
-                    if (board.pos5 == player.player1Tile || board.pos5 == player.player2Tile)
+                    if (board.pos5 == player1.playerTile || board.pos5 == player2.playerTile)
                     {
                         Rules(playerName, playerTile);
                     }
@@ -184,7 +174,7 @@ public class TicTacToe
                     }
                     break;
                 case 6:
-                    if (board.pos6 == player.player1Tile || board.pos6 == player.player2Tile)
+                    if (board.pos6 == player1.playerTile || board.pos6 == player2.playerTile)
                     {
                         Rules(playerName, playerTile);
                     }
@@ -194,7 +184,7 @@ public class TicTacToe
                     }
                     break;
                 case 7:
-                    if (board.pos7 == player.player1Tile || board.pos7 == player.player2Tile)
+                    if (board.pos7 == player1.playerTile || board.pos7 == player2.playerTile)
                     {
                         Rules(playerName, playerTile);
                     }
@@ -204,7 +194,7 @@ public class TicTacToe
                     }
                     break;
                 case 8:
-                    if (board.pos8 == player.player1Tile || board.pos8 == player.player2Tile)
+                    if (board.pos8 == player1.playerTile || board.pos8 == player2.playerTile)
                     {
                         Rules(playerName, playerTile);
                     }
@@ -214,7 +204,7 @@ public class TicTacToe
                     }
                     break;
                 case 9:
-                    if (board.pos9 == player.player1Tile || board.pos9 == player.player2Tile)
+                    if (board.pos9 == player1.playerTile || board.pos9 == player2.playerTile)
                     {
                         Rules(playerName, playerTile);
                     }
@@ -275,36 +265,36 @@ public class TicTacToe
                                $" {pos1} | {pos2} | {pos3} ");
         }
 
-        public string Update(string playerInput, string currentPlayer) // set new tile for game board
+        public string Update(string playerInput, string PlayerTile) // set new tile for game board
         {
             switch (playerInput)
             {
                 case "1":
-                    pos1 = currentPlayer;
+                    pos1 = PlayerTile;
                     break;
                 case "2":
-                    pos2 = currentPlayer;
+                    pos2 = PlayerTile;
                     break;
                 case "3":
-                    pos3 = currentPlayer;
+                    pos3 = PlayerTile;
                     break;
                 case "4":
-                    pos4 = currentPlayer;
+                    pos4 = PlayerTile;
                     break;
                 case "5":
-                    pos5 = currentPlayer;
+                    pos5 = PlayerTile;
                     break;
                 case "6":
-                    pos6 = currentPlayer;
+                    pos6 = PlayerTile;
                     break;
                 case "7":
-                    pos7 = currentPlayer;
+                    pos7 = PlayerTile;
                     break;
                 case "8":
-                    pos8 = currentPlayer;
+                    pos8 = PlayerTile;
                     break;
                 case "9":
-                    pos9 = currentPlayer;
+                    pos9 = PlayerTile;
                     break;
             }
             return playerInput;
@@ -313,18 +303,13 @@ public class TicTacToe
 
     class Player
     {
-        public string player1Name { get; set; }
-        public string player1Tile { get; set; }
-        public string player2Name { get; set; }
-        public string player2Tile { get; set; }
+        public string playerName { get; set; }
+        public string playerTile { get; set; }
 
-
-        public Player()
+        public Player(string playerName, string playerTile)
         {
-            player1Name = "Player 1";
-            player1Tile = "X";
-            player2Name = "Player 2";
-            player2Tile = "O";
+            this.playerName = playerName;
+            this.playerTile = playerTile;
         }
     }
 }
