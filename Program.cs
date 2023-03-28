@@ -4,11 +4,8 @@ using System.Numerics;
 
 public class Program
 {
-    public static bool safe;
-
     private static void Main(string[] args)
     {
-
         Board board = new Board();
         Player player = new Player();
 
@@ -16,10 +13,12 @@ public class Program
         Console.ReadLine();
 
         // setup names
+        Console.Clear();
         Console.WriteLine("What is Player 1's name");
         var askP1 = Console.ReadLine();
         player.player1Name = askP1;
 
+        Console.Clear();
         Console.WriteLine("What is Player 2's name");
         var askP2 = Console.ReadLine();
         player.player2Name = askP2;
@@ -28,23 +27,17 @@ public class Program
         bool gameOver = false;
         while (!gameOver)
         {
-
             // Player 1 turn
             Turn(player.player1Name, player.player1Tile);
-
-            //TieGame();
-            HasWon(player.player1Name);
+            P1Status(player.player1Name);
             TieGame();
             if (gameOver) { break; }
 
             // Player 2 turn
             Turn(player.player2Name, player.player2Tile);
-
-            //TieGame();
-            HasWon(player.player2Name);
+            P2Status(player.player2Name);
             TieGame();
             if (gameOver) { break; }
-
         }
 
         void Turn(string playerName, string playerTile)
@@ -63,7 +56,7 @@ public class Program
             TileValidation(playerInput, playerName, playerTile);
         }
 
-        void HasWon(string playerName)
+        void P1Status(string playerName)
         {
             if(board.pos1 == player.player1Tile && board.pos2 == player.player1Tile && board.pos3 == player.player1Tile) Won(playerName);
             if (board.pos4 == player.player1Tile && board.pos5 == player.player1Tile && board.pos6 == player.player1Tile) Won(playerName);
@@ -73,6 +66,10 @@ public class Program
             if (board.pos9 == player.player1Tile && board.pos6 == player.player1Tile && board.pos3 == player.player1Tile) Won(playerName);
             if (board.pos7 == player.player1Tile && board.pos5 == player.player1Tile && board.pos3 == player.player1Tile) Won(playerName);
             if (board.pos9 == player.player1Tile && board.pos5 == player.player1Tile && board.pos1 == player.player1Tile) Won(playerName);
+        }
+
+        void P2Status(string playerName)
+        {
             if (board.pos1 == player.player2Tile && board.pos2 == player.player2Tile && board.pos3 == player.player2Tile) Won(playerName);
             if (board.pos4 == player.player2Tile && board.pos5 == player.player2Tile && board.pos6 == player.player2Tile) Won(playerName);
             if (board.pos7 == player.player2Tile && board.pos8 == player.player2Tile && board.pos9 == player.player2Tile) Won(playerName);
@@ -87,7 +84,7 @@ public class Program
         {
             Console.Clear();
             board.Results();
-            Console.WriteLine($"\n{playerName} is the WINNER!");
+            Console.WriteLine($"\n{playerName} is the Winner!");
             gameOver = true;
         }
 
@@ -97,7 +94,7 @@ public class Program
             {
                 Console.Clear();
                 board.Results();
-                Console.WriteLine("DRAW GAME!");
+                Console.WriteLine("\n---Draw Grame---");
                 gameOver = true;
             }
         }
@@ -226,7 +223,7 @@ public class Program
         {
             Console.Clear();
 
-            Console.WriteLine("That tile is already claimed. Please select a differnt one.");
+            Console.WriteLine("That tile is already claimed. Please select a different one.");
 
             Console.WriteLine("Press 'Enter' to continue");
 
@@ -234,7 +231,6 @@ public class Program
 
             Turn(playerName, playerTile);
         }
-
     }
 
     class Board
@@ -261,7 +257,6 @@ public class Program
             pos8 = " ";
             pos9 = " ";
         }
-
 
         public void Results() // display current game board results
         {
@@ -328,17 +323,5 @@ public class Program
 
         //what else? scores?
 
-    }
-
-    class Score 
-    {
-
-        public Score() { }
-    }
-
-    class GameStatus
-    {
-
-        public bool gameOver;
     }
 }
