@@ -2,13 +2,14 @@
 using System.Data;
 using System.Numerics;
 
-public class Program
+public class TicTacToe
 {
     private static void Main(string[] args)
     {
         Board board = new Board();
         Player player = new Player();
 
+        // output game info
         Console.WriteLine("Welcome to Tic Tac Toe!\n\nInstructions: Use the numerical pad to place your tile in the designated place\nExample: 7 = the top left position\n\nPress 'Enter' to continue");
         Console.ReadLine();
 
@@ -40,6 +41,7 @@ public class Program
             if (gameOver) { break; }
         }
 
+        // player turn steps
         void Turn(string playerName, string playerTile)
         {
             Console.Clear();
@@ -56,6 +58,7 @@ public class Program
             TileValidation(playerInput, playerName, playerTile);
         }
 
+        // validate if player has won
         void P1Status(string playerName)
         {
             if(board.pos1 == player.player1Tile && board.pos2 == player.player1Tile && board.pos3 == player.player1Tile) Won(playerName);
@@ -80,6 +83,7 @@ public class Program
             if (board.pos9 == player.player2Tile && board.pos5 == player.player2Tile && board.pos1 == player.player2Tile) Won(playerName);
         }
 
+        // output winner
         void Won(string playerName)
         {
             Console.Clear();
@@ -88,6 +92,7 @@ public class Program
             gameOver = true;
         }
 
+        // validate if all tiles have been claimed
         void TieGame()
         {
             if (board.pos1 != " " && board.pos2 != " " && board.pos3 != " " && board.pos4 != " " && board.pos5 != " " && board.pos6 != " " && board.pos7 != " " && board.pos8 != " " && board.pos9 != " ")
@@ -99,6 +104,7 @@ public class Program
             }
         }
 
+        // validate player input is acceptable 
         string RangeValidation(string playerInput, string playerName, string playerTile) // validate range is between 1 and 9
         {
             int playerInputConvert = Convert.ToInt32(playerInput);
@@ -120,6 +126,7 @@ public class Program
             return playerInput;
         }
 
+        // validate tile is not already claimed
         void TileValidation(string playerInput, string playerName, string playerTile)
         {
             int playerInputConvert = Convert.ToInt32(playerInput);
@@ -219,6 +226,7 @@ public class Program
             }
         }
 
+        // if tile is claimed do this
         void Rules(string playerName, string playerTile)
         {
             Console.Clear();
@@ -265,7 +273,6 @@ public class Program
                                $" {pos4} | {pos5} | {pos6} " +
                                 "\n---+---+---\n" +
                                $" {pos1} | {pos2} | {pos3} ");
-
         }
 
         public string Update(string playerInput, string currentPlayer) // set new tile for game board
@@ -302,7 +309,6 @@ public class Program
             }
             return playerInput;
         }
-
     }
 
     class Player
@@ -320,8 +326,5 @@ public class Program
             player2Name = "Player 2";
             player2Tile = "O";
         }
-
-        //what else? scores?
-
     }
 }
